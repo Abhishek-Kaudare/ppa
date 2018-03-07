@@ -59,6 +59,7 @@
 
 
                 <!--/To Be Constructed-->
+                 @include('inc.messages')
                 @yield('content')
             </section>
             <!-- /.content -->

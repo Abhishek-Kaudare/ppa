@@ -21,9 +21,7 @@ Route::get('/c', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('inwards', 'InwardsController@inwards')->name('inwards');
+Route::get('/home', 'InwardsController@index')->name('home');
 
 Route::resource('admin','InwardsController');
 

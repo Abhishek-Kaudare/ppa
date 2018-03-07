@@ -1,6 +1,9 @@
 @extends('layouts.master')
 
+
+
 @section('content')
+    
     {!! Form::open(['action' => 'InwardsController@store','method' => 'POST']) !!}
         <div class="form-group">
             {{(Form::label('date','Date'))}}
