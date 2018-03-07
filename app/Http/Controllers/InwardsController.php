@@ -63,26 +63,26 @@ class InwardsController extends Controller
     //     $passport->save();
         
             $this->validate($request, [
-                'date' => 'requiured',
-                'recievedfrom' => 'requiured',
-                'brand' => 'requiured',
-                'quality' => 'requiured',
-                'gsm' => 'requiured',
-                'reelno' => 'requiured',
-                'grosswt' => 'requiured',
-                'netwt' => 'requiured'
+                'date' => 'required',
+                'recievedfrom' => 'required',
+                'brand' => 'required',
+                'quality' => 'required',
+                'gsm' => 'required',
+                'reelno' => 'required',
+                'grosswt' => 'required',
+                'netwt' => 'required'
                 
             ]);
 
             $inwards = new inwards;
-            $inwards->Date =$request->input('Date');
-            $inwards->RecievedFrom =$request->input('RecievedFrom');
-            $inwards->Brand =$request->input('Brand');
-            $inwards->Quality =$request->input('Quality');
-            $inwards->Gsm =$request->input('GSM');
-            $inwards->ReelNo =$request->input('ReelNo');
-            $inwards->GrossWt =$request->input('GrossWt');
-            $inwards->NetWt =$request->input('NetWt');
+            $inwards->Date =$request->input('date');
+            $inwards->RecievedFrom =$request->input('recievedfrom');
+            $inwards->Brand =$request->input('brand');
+            $inwards->Quality =$request->input('quality');
+            $inwards->Gsm =$request->input('gsm');
+            $inwards->ReelNo =$request->input('reelno');
+            $inwards->GrossWt =$request->input('grosswt');
+            $inwards->NetWt =$request->input('netwt');
             $inwards->save();
         
         return redirect('admin/create')->with('success', 'Information has been added');
