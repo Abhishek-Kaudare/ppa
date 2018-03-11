@@ -40,10 +40,10 @@
     <div class="wrapper" style="height: auto; min-height: 100%;">
 
 
-        @include('layouts.header');
+        @include('inc.header');
 
         <!-- Left side column. contains the logo and sidebar -->
-        @include('layouts.sidebar');
+        @include('inc.sidebar');
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper" style="min-height: 497.933px;">
             <!-- Content Header (Page header) -->
@@ -59,7 +59,7 @@
 
 
                 <!--/To Be Constructed-->
-                 @include('inc.messages')
+                @include('inc.messages')
                 @yield('content')
             </section>
             <!-- /.content -->

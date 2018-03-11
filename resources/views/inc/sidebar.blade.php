@@ -9,25 +9,25 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu tree" data-widget="tree">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="treeview">
-                <a href="/admin/create" class="logo">
+            <li>
+                <a href="{{ URL::to('/inwards') }}" >
                     <i class="fa fa-caret-square-o-down"></i>
                     <span>Inwards</span>
                 </a>
             </li>
-            <li class="treeview">
+            <li>
                 <a href="#">
                     <i class="fa fa-caret-square-o-up"></i>
                     <span>Outwards</span>
                 </a>
             </li>
-            <li class="treeview">
+            <li>
                 <a href="#">
                     <i class="fa fa-archive"></i>
                     <span>Stock</span>
                 </a>
             </li>
-            <li class="treeview">
+            <li>
                 <a href="#">
                     <i class="fa fa-search"></i>
                     <span>Search</span>

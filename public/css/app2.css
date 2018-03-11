@@ -288,7 +288,7 @@ th {
   }
   .table-bordered th,
   .table-bordered td {
-    border: 1px solid #ddd !important;
+    border: 1px solid rgb(73, 70, 70) !important;
   }
 }
 
@@ -1690,12 +1690,12 @@ pre code {
 }
 
 .table-bordered {
-  border: 1px solid #eceeef;
+  border: 1px solid #56595a;
 }
 
 .table-bordered th,
 .table-bordered td {
-  border: 1px solid #eceeef;
+  border: 1px solid #4f5253;
 }
 
 .table-bordered thead th,

@@ -23,5 +23,6 @@ Auth::routes();
 
 Route::get('/home', 'InwardsController@index')->name('home');
 
-Route::resource('admin','InwardsController');
+Route::resource('inwards','InwardsController');
+
 

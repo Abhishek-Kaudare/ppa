@@ -18,7 +18,7 @@ class inwards extends Model
      */
     protected $table= 'inwards';
 
-    public $primaryKey ='ReelNo';
+   
     
     protected $fillable = [
 

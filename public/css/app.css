@@ -1599,6 +1599,8 @@ a:focus {
 }
 .box.box-primary {
   border-top-color: #3c8dbc;
+   padding-right: 6px;
+  padding-left: 6px;
 }
 .box.box-info {
   border-top-color: #00c0ef;
@@ -1660,6 +1662,8 @@ a:focus {
 }
 .box.box-solid.box-primary {
   border: 1px solid #3c8dbc;
+  padding-right: 6px;
+  padding-left: 6px;
 }
 .box.box-solid.box-primary > .box-header {
   color: #ffffff;
@@ -2772,7 +2776,7 @@ a:focus {
   margin-top: 5px;
 }
 .table-bordered {
-  border: 1px solid #0e0d0d;
+  border: 1px solid #615d5d;
 }
 .table-bordered > thead > tr > th,
 .table-bordered > tbody > tr > th,
@@ -2780,7 +2784,7 @@ a:focus {
 .table-bordered > thead > tr > td,
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > td {
-  border: 1px solid #0e0d0d;
+  border: 1px solid #5f5c5c;
 }
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
