@@ -30,9 +30,7 @@
   <![endif] -->
 
     <!-- Google Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <link rel="stylesheet" href="http://ppa.com/css/app.css">
-    <link rel="stylesheet" href="http://ppa.com/css/app2.css">
+    @include('inc.style')
 
 </head>
 
@@ -85,8 +83,7 @@
     <!-- <script src="../../dist/js/adminlte.min.js"></script> -->
     <!-- AdminLTE for demo purposes -->
     <!-- <script src="../../dist/js/demo.js"></script> -->
-    <script src="http://ppa.com/js/app.js"></script>
-    <script src="http://sm.com/js/twbsPagination.js"></script>
+    @include('inc.scripts')
 
 
 </body>

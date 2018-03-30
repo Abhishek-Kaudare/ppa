@@ -1,4 +1,5 @@
-@extends('layouts.master') @section('content')
+@extends('layouts.master') 
+@section('content')
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Inwards Entry</h3>
@@ -17,13 +18,13 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="recievedfrom">Recieved From:</label>
-                        <input type="text" id="recievedfrom" name="recievedfrom" value="asd" class="form-control"  placeholder="Recieved From">
+                        <input type="text" id="recievedfrom" name="recievedfrom" class="form-control"  placeholder="Recieved From">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="brand">Brand:</label>
-                        <input type="text" id="brand" name="brand" value="asd" class="form-control" placeholder="Brand">
+                        <input type="text" id="brand" name="brand" class="form-control" placeholder="Brand">
                     </div>
                 </div>
             </div>
@@ -31,19 +32,19 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="quality">Quality:</label>
-                        <input type="text" id="quality" name="quality" value="asd" class="form-control" placeholder="Quality">
+                        <input type="text" id="quality" name="quality" class="form-control" placeholder="Quality">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="gsm">GSM:</label>
-                        <input type="text" id="gsm" name="gsm" value="123" class="form-control" placeholder="GSM">
+                        <input type="text" id="gsm" name="gsm" class="form-control" placeholder="GSM">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="reelno">Reel No.:</label>
-                        <input type="text" id="reelno" name="reelno" value="123" class="form-control" placeholder="Reel Number">
+                        <input type="text" id="reelno" name="reelno" class="form-control" placeholder="Reel Number">
                     </div>
                 </div>
             </div>
@@ -51,13 +52,13 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="grosswt">Gross Weight:</label>
-                        <input type="text" id="grosswt" name="grosswt" value="123" class="form-control" placeholder="Gross Weight">
+                        <input type="text" id="grosswt" name="grosswt" class="form-control" placeholder="Gross Weight">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="netwt">Net Weight:</label>
-                        <input type="text" id="netwt" name="netwt" value="123" class="form-control" placeholder="Net Weight">
+                        <input type="text" id="netwt" name="netwt" class="form-control" placeholder="Net Weight">
                     </div>
                 </div>
             </div>

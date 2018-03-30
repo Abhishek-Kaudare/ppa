@@ -25,4 +25,5 @@ Route::get('/home', 'InwardsController@index')->name('home');
 
 Route::resource('inwards','InwardsController');
 
+Route::resource('outwards','OutwardsController');
 

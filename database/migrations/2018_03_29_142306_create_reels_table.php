@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Inwards extends Migration
+class CreateReelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,12 @@ class Inwards extends Migration
      */
     public function up()
     {
-        Schema::create('inwards', function (Blueprint $table) {
+        Schema::create('reels', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('Date');
-            $table->string('RecievedFrom');
-            $table->string('Brand');
-            $table->string('Quality');
-            $table->integer('Gsm');
             $table->string('ReelNo');
-            $table->integer('GrossWt');
-            $table->integer('NetWt');
+            $table->integer('outwards_id')->nullable();
+            $table->integer('remaining_wt');
+            $table->integer('active')->default('1');
             $table->timestamps();
         });
     }
@@ -34,6 +30,6 @@ class Inwards extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('reels');
     }
 }

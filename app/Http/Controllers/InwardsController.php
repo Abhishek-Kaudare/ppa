@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\inwards;
+use App\reel;
+use App\brand;
+use App\quality;
+use App\supplier;
 use View;
+use DB;
 
 class InwardsController extends Controller
 {
@@ -31,7 +36,7 @@ class InwardsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response 
      */
     public function create()
     {
@@ -44,22 +49,27 @@ class InwardsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request )
     {
     //    
-        
-            $this->validate($request, [
+            $this->validate($request,[
                 'date' => 'required|date|before:today',
                 'recievedfrom' => 'required',
                 'brand' => 'required',
                 'quality' => 'required',
-                'gsm' => 'required',
+                'gsm' => 'required|numeric|min:0',
                 'reelno' => 'required|unique:inwards|',
-                'grosswt' => 'required',
-                'netwt' => 'required'
-                
+                'grosswt' => 'required|numeric|min:0',
+                'netwt' => 'numeric|min:0'
             ]);
             // inwards::create($request->all());
+            // reel::firstorCreate(array('ReelNo'=> $request->input('reelno'),'outwards_id'=> null,'remaining_wt'=> $request->input('grosswt')));
+            $reel = new reel;
+            $reel->ReelNo =$request->input('reelno');
+            $reel->outwards_id =null;
+            $reel->remaining_wt =$request->input('grosswt');
+            $reel->save();
+
             $inwards = new inwards;
             $inwards->Date =$request->input('date');
             $inwards->RecievedFrom =$request->input('recievedfrom');
@@ -107,7 +117,97 @@ class InwardsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+                'date' => 'required|date|before:today',
+                'recievedfrom' => 'required',
+                'brand' => 'required',
+                'quality' => 'required',
+                'gsm' => 'required',
+                'reelno' => 'required',
+                'grosswt' => 'required',
+                'netwt'
+                
+            ]);
+        $reel= DB::table('reels')->where('ReelNo', '=', $request->input('reelno'))->orderBy('created_at', 'desc');
+        $c=$reel->count();
+        // if (count($reel)==1) 
+        // {
+        //     $reel = new reel;
+        //     $reel->ReelNo =$request->input('reelno');
+        //     $reel->outwards_id =$reel->outwards_id;
+        //     $reel->remaining_wt =$request->input('grosswt');
+        //     $reel->save();
+        // }
+        // else
+        
+        $inwards= inwards::find($id);
+        if($inwards->ReelNo ==  $request->input('reelno'))
+        {
+            if($c>0)
+            {
+                $rz = $reel->remaining_wt;
+                $r = $request->input('grosswt');
+                foreach ($reel as $re) {
+                    $re->ReelNo =$request->input('reelno');
+                    $re->outwards_id =$reel->outwards_id;
+                    $re->remaining_wt =$request->input('grosswt') + $r;
+                    $re->save();
+                }
+            }
+            else
+            {
+                $reel = new reel;
+                $reel->ReelNo =$request->input('reelno');
+                $reel->outwards_id =$reel->outwards_id;
+                $reel->remaining_wt =$request->input('grosswt');
+                $reel->save();
+            }
+            $inwards->Date =$request->input('date');
+            $inwards->RecievedFrom =$request->input('recievedfrom');
+            $inwards->Brand =$request->input('brand');
+            $inwards->Quality =$request->input('quality');
+            $inwards->Gsm =$request->input('gsm');
+            $inwards->ReelNo =$request->input('reelno');
+            $inwards->GrossWt =$request->input('grosswt');
+            $inwards->NetWt =$request->input('netwt');
+            $inwards->save();
+            return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
+        }
+        else
+        {
+            $this->validate($request, [
+                'reelno' => 'unique:inwards'
+            ]);
+            if($c>0)
+            {
+                $r = $request->input('grosswt') - $reel->remaining_wt;
+                foreach ($reel as $reel) {
+                    $reel = new reel;
+                    $reel->ReelNo =$request->input('reelno');
+                    $reel->outwards_id =$reel->outwards_id;
+                    $reel->remaining_wt =$request->input('grosswt') + $r;
+                    $reel->save();
+                }
+            }
+            else
+            {
+                $reel = new reel;
+                $reel->ReelNo =$request->input('reelno');
+                $reel->outwards_id =$reel->outwards_id;
+                $reel->remaining_wt =$request->input('grosswt');
+                $reel->save();
+            }
+            $inwards->Date =$request->input('date');
+            $inwards->RecievedFrom =$request->input('recievedfrom');
+            $inwards->Brand =$request->input('brand');
+            $inwards->Quality =$request->input('quality');
+            $inwards->Gsm =$request->input('gsm');
+            $inwards->ReelNo =$request->input('reelno');
+            $inwards->GrossWt =$request->input('grosswt');
+            $inwards->NetWt =$request->input('netwt');
+            $inwards->save();
+            return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
+        }
     }
 
     /**
