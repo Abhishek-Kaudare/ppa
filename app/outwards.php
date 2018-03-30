@@ -16,13 +16,17 @@ class outwards extends Model
      * @var array
 
      */
-    protected $table= 'inwards';
+    protected $table= 'outwards';
 
    
     
     protected $fillable = [
 
-        'date', 'rf', 'brand', 'Q', 'gsm', 'reelno', 'Gross', 'net'
+       'cname', 'date', 'tdn', 'odn', 'wt', 'mtr', 'reelno', 'remarks'
 
     ];
+
+    public function inwards(){
+        return $this->belongsTo('App\inwards');
+    }
 }

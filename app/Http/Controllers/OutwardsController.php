@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\outwards;
+use App\inwards;
 use Illuminate\Http\Request;
+use View;
 
 class OutwardsController extends Controller
 {
@@ -46,31 +48,39 @@ class OutwardsController extends Controller
     {
     //    
         
-            $this->validate($request, [
-                'date' => 'required|date|before:today',
-                'recievedfrom' => 'required',
-                'brand' => 'required',
-                'quality' => 'required',
-                'gsm' => 'required',
-                'reelno' => 'required|unique:outwards|',
-                'grosswt' => 'required',
-                'netwt' => 'required'
-                
-            ]);
-            // outwards::create($request->all());
-            $outwards = new outwards;
-            $outwards->Date =$request->input('date');
-            $outwards->RecievedFrom =$request->input('recievedfrom');
-            $outwards->Brand =$request->input('brand');
-            $outwards->Quality =$request->input('quality');
-            $outwards->Gsm =$request->input('gsm');
-            $outwards->ReelNo =$request->input('reelno');
-            $outwards->GrossWt =$request->input('grosswt');
-            $outwards->NetWt =$request->input('netwt');
-            $outwards->save();
+        $this->validate($request, [
+            'cname' => 'required',
+            'dod' => 'required|date|before:today',
+            'tdn' => 'required',
+            'odn' => 'required',
+            'weight' => 'required|numeric|min:0',
+            'meter' => 'required|numeric|min:0',
+            'ReelNo' => 'required',
+            'remarks' 
+            
+        ]);
+       
+        $inwards=inwards::where('ReelNo',$request->input('ReelNo'))->get();
+        // return view('admin.eg',compact('inwards'));
         
-        return redirect()->back()->with('success', 'Information has been added');
-    
+        if(count($inwards)==0)
+        {
+            return redirect()->back()->with('warning', 'Reel No does not exist in Inwards');
+        }
+        else 
+        {
+            $outwards = new outwards;
+            $outwards->CustomerName =$request->input('cname');
+            $outwards->DateOfDispatch =$request->input('dod');
+            $outwards->TheirDesignNo =$request->input('tdn');
+            $outwards->OurDesignNo =$request->input('odn');
+            $outwards->Weight =$request->input('weight');
+            $outwards->Meter =$request->input('meter');
+            $outwards->ReelNo =$request->input('ReelNo');
+            $outwards->Remarks =$request->input('remarks');
+            $outwards->save();
+            return redirect()->back()->with('success', 'Information has been added');
+        }
     }
 
     /**

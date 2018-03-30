@@ -18,6 +18,7 @@ class inwards extends Model
      */
     protected $table= 'inwards';
 
+
    
     
     protected $fillable = [
@@ -25,4 +26,8 @@ class inwards extends Model
         'date', 'rf', 'brand', 'Q', 'gsm', 'reelno', 'Gross', 'net'
 
     ];
+
+    public function outwards(){
+        return $this->hasMany('App\outwards','ReelNo','ReelNo');
+    }
 }

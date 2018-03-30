@@ -58,7 +58,7 @@ class InwardsController extends Controller
                 'brand' => 'required',
                 'quality' => 'required',
                 'gsm' => 'required|numeric|min:0',
-                'reelno' => 'required|unique:inwards|',
+                'reelno' => 'required|unique:inwards',
                 'grosswt' => 'required|numeric|min:0',
                 'netwt' => 'numeric|min:0'
             ]);
@@ -122,46 +122,17 @@ class InwardsController extends Controller
                 'recievedfrom' => 'required',
                 'brand' => 'required',
                 'quality' => 'required',
-                'gsm' => 'required',
+                'gsm' => 'required|numeric|min:0',
                 'reelno' => 'required',
-                'grosswt' => 'required',
-                'netwt'
-                
+                'grosswt' => 'required|numeric|min:0',
+                'netwt' => 'numeric|min:0'
             ]);
-        $reel= DB::table('reels')->where('ReelNo', '=', $request->input('reelno'))->orderBy('created_at', 'desc');
-        $c=$reel->count();
-        // if (count($reel)==1) 
-        // {
-        //     $reel = new reel;
-        //     $reel->ReelNo =$request->input('reelno');
-        //     $reel->outwards_id =$reel->outwards_id;
-        //     $reel->remaining_wt =$request->input('grosswt');
-        //     $reel->save();
-        // }
-        // else
+        
+       
         
         $inwards= inwards::find($id);
-        if($inwards->ReelNo ==  $request->input('reelno'))
+        if($inwards->ReelNo ==  $request->input('reelno')) //checks the uniqueness of reelno
         {
-            if($c>0)
-            {
-                $rz = $reel->remaining_wt;
-                $r = $request->input('grosswt');
-                foreach ($reel as $re) {
-                    $re->ReelNo =$request->input('reelno');
-                    $re->outwards_id =$reel->outwards_id;
-                    $re->remaining_wt =$request->input('grosswt') + $r;
-                    $re->save();
-                }
-            }
-            else
-            {
-                $reel = new reel;
-                $reel->ReelNo =$request->input('reelno');
-                $reel->outwards_id =$reel->outwards_id;
-                $reel->remaining_wt =$request->input('grosswt');
-                $reel->save();
-            }
             $inwards->Date =$request->input('date');
             $inwards->RecievedFrom =$request->input('recievedfrom');
             $inwards->Brand =$request->input('brand');
@@ -171,6 +142,32 @@ class InwardsController extends Controller
             $inwards->GrossWt =$request->input('grosswt');
             $inwards->NetWt =$request->input('netwt');
             $inwards->save();
+            $in = inwards::find($id);
+            $reel= reel::where('ReelNo', $in->ReelNo )
+                    ->oldest();
+            $c=$reel->count();
+            if($c>0)
+            {
+                $g = $in->GrossWt - $reel->remaining_wt ;
+                // $reel->remaining_wt =$reel->remaining_wt + $g;
+                $reel->update(['remaining_wt'=>$reel->remaining_wt + $g]);
+                // DB::table('reels')->whereIn('ReelNo', $in->ReelNo)->update($update);
+                $reel->save();
+                foreach ($reel as $re) {
+                    // $re->ReelNo =$re->ReelNo;
+                    // $re->outwards_id =$re->outwards_id;
+                    // $re->remaining_wt =$in->GrossWt + $g;
+                    // $re->save();
+                }
+            }
+            else
+            {
+                $reel = new reel;
+                $reel->ReelNo =$re->ReelNo;
+                $reel->outwards_id =$re->outwards_id;
+                $reel->remaining_wt =$in->GrossWt ;
+                $reel->save();
+            }
             return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
         }
         else
@@ -178,25 +175,7 @@ class InwardsController extends Controller
             $this->validate($request, [
                 'reelno' => 'unique:inwards'
             ]);
-            if($c>0)
-            {
-                $r = $request->input('grosswt') - $reel->remaining_wt;
-                foreach ($reel as $reel) {
-                    $reel = new reel;
-                    $reel->ReelNo =$request->input('reelno');
-                    $reel->outwards_id =$reel->outwards_id;
-                    $reel->remaining_wt =$request->input('grosswt') + $r;
-                    $reel->save();
-                }
-            }
-            else
-            {
-                $reel = new reel;
-                $reel->ReelNo =$request->input('reelno');
-                $reel->outwards_id =$reel->outwards_id;
-                $reel->remaining_wt =$request->input('grosswt');
-                $reel->save();
-            }
+                
             $inwards->Date =$request->input('date');
             $inwards->RecievedFrom =$request->input('recievedfrom');
             $inwards->Brand =$request->input('brand');
@@ -206,10 +185,12 @@ class InwardsController extends Controller
             $inwards->GrossWt =$request->input('grosswt');
             $inwards->NetWt =$request->input('netwt');
             $inwards->save();
-            return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
+            $in = inwards::find($id);
+            return redirect()->route('inwards.reel',$in); //action('InwardsController@reels_update($in)');
         }
     }
 
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -220,5 +201,39 @@ class InwardsController extends Controller
     {
         inwards::destroy($id);
         return redirect()->back()->with('success','Entry deleted successfully');
+    }
+
+    /**
+     * Update the reels resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function reels_update($in)
+    {
+        $reel= reel::where('ReelNo', $in->ReelNo)
+                    ->oldest()
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+        $c=$reel->count();
+        if($c>0)
+        {
+            $g = $in->GrossWt - $reel->remaining_wt;
+            foreach ($reel as $re) {
+                $re->ReelNo =$in->ReelNo;
+                $re->outwards_id =$reel->outwards_id;
+                $re->remaining_wt =$in->GrossWt + $g;
+                $re->save();
+            }
+        }
+        else
+        {
+            $reel = new reel;
+            $re->ReelNo =$in->ReelNo;
+            $re->outwards_id =$reel->outwards_id;
+            $re->remaining_wt =$in->GrossWt + $g;
+            $re->save();
+        }
+        return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
     }
 }

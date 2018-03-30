@@ -22,7 +22,7 @@ class CreateOutwardsTable extends Migration
             $table->integer('Weight');
             $table->integer('Meter');
             $table->string('ReelNo');
-            $table->string('Remarks');
+            $table->string('Remarks')->nullable();
             $table->timestamps();
         });
     }

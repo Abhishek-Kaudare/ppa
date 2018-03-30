@@ -27,3 +27,5 @@ Route::resource('inwards','InwardsController');
 
 Route::resource('outwards','OutwardsController');
 
+Route::patch('/inwards/{inward}/reel', 'InwardsController@reels_update')->name('inwards.reel');
+
