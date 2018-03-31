@@ -142,18 +142,19 @@ class InwardsController extends Controller
             $inwards->GrossWt =$request->input('grosswt');
             $inwards->NetWt =$request->input('netwt');
             $inwards->save();
+
+
             $in = inwards::find($id);
-            $reel= reel::where('ReelNo', $in->ReelNo )
-                    ->oldest();
-            $c=$reel->count();
-            if($c>0)
+            $reel= reel::where('ReelNo', $in->ReelNo )->get();
+            if(count($reel)>0)
             {
                 $g = $in->GrossWt - $reel->remaining_wt ;
-                // $reel->remaining_wt =$reel->remaining_wt + $g;
-                $reel->update(['remaining_wt'=>$reel->remaining_wt + $g]);
+                $reel->remaining_wt =$reel->remaining_wt + $g;
+                
                 // DB::table('reels')->whereIn('ReelNo', $in->ReelNo)->update($update);
                 $reel->save();
                 foreach ($reel as $re) {
+                    $reel->update(['remaining_wt'=>$reel->remaining_wt + $g]);
                     // $re->ReelNo =$re->ReelNo;
                     // $re->outwards_id =$re->outwards_id;
                     // $re->remaining_wt =$in->GrossWt + $g;
@@ -168,7 +169,8 @@ class InwardsController extends Controller
                 $reel->remaining_wt =$in->GrossWt ;
                 $reel->save();
             }
-            return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
+            return redirect()->route('inwards.reel',$in);
+            // return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
         }
         else
         {
@@ -186,7 +188,7 @@ class InwardsController extends Controller
             $inwards->NetWt =$request->input('netwt');
             $inwards->save();
             $in = inwards::find($id);
-            return redirect()->route('inwards.reel',$in); //action('InwardsController@reels_update($in)');
+            return redirect()->route('inwards.reel',$in); 
         }
     }
 
