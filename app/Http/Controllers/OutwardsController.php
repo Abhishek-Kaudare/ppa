@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\outwards;
+
 use App\inwards;
 use Illuminate\Http\Request;
 use View;
@@ -60,12 +61,12 @@ class OutwardsController extends Controller
             
         ]);
        
-        $inwards=inwards::where('ReelNo',$request->input('ReelNo'))->get();
-        // return view('admin.eg',compact('inwards'));
+        $outwards=outwards::where('ReelNo',$request->input('ReelNo'))->get();
+        // return view('admin.eg',compact('outwards'));
         
-        if(count($inwards)==0)
+        if(count($outwards)==0)
         {
-            return redirect()->back()->with('warning', 'Reel No does not exist in Inwards');
+            return redirect()->back()->with('warning', 'Reel No does not exist in outwards');
         }
         else 
         {
@@ -116,27 +117,81 @@ class OutwardsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-                'date' => 'required|date|before:today',
-                'recievedfrom' => 'required',
-                'brand' => 'required',
-                'quality' => 'required',
-                'gsm' => 'required',
-                'reelno' => 'required|',
-                'grosswt' => 'required',
-                'netwt' => 'required'
-                
-            ]);
-            $outwards= outwards::find($id);
-            $outwards->Date =$request->input('date');
-            $outwards->RecievedFrom =$request->input('recievedfrom');
-            $outwards->Brand =$request->input('brand');
-            $outwards->Quality =$request->input('quality');
-            $outwards->Gsm =$request->input('gsm');
-            $outwards->ReelNo =$request->input('reelno');
-            $outwards->GrossWt =$request->input('grosswt');
-            $outwards->NetWt =$request->input('netwt');
+            'cname' => 'required',
+            'dod' => 'required|date|before:today',
+            'tdn' => 'required',
+            'odn' => 'required',
+            'weight' => 'required|numeric|min:0',
+            'meter' => 'required|numeric|min:0',            
+        ]);
+        
+       
+        
+        $outwards= outwards::find($id);
+        if($outwards->ReelNo ==  $request->input('ReelNo')) //checks the uniqueness of reelno
+        {
+            $outwards->CustomerName =$request->input('cname');
+            $outwards->DateOfDispatch =$request->input('dod');
+            $outwards->TheirDesignNo =$request->input('tdn');
+            $outwards->OurDesignNo =$request->input('odn');
+            $outwards->Weight =$request->input('weight');
+            $outwards->Meter =$request->input('meter');
+            $outwards->ReelNo =$request->input('ReelNo');
+            $outwards->Remarks =$request->input('remarks');
             $outwards->save();
-            return redirect()->route('outwards.index')->with('success','outwards updated successfully');
+            return redirect()->route('outwards.index')->with('success','Outwards updated successfully');
+            
+            // $outwards=outwards::where('ReelNo',$request->input('ReelNo'))->get();
+            // return view('admin.eg',compact('outwards'));
+            // if(count($outwards)==0)
+            // {
+            //     return redirect()->back()->with('warning', 'Reel No does not exist in outwards');
+            // }
+            // $in = outwards::find($id);
+            // $reel= reel::where('ReelNo', $in->ReelNo )
+            //         ->oldest();
+            // $c=$reel->count();
+            // if($c>0)
+            // {
+            //     $g = $in->GrossWt - $reel->remaining_wt ;
+            //     // $reel->remaining_wt =$reel->remaining_wt + $g;
+            //     $reel->update(['remaining_wt'=>$reel->remaining_wt + $g]);
+            //     // DB::table('reels')->whereIn('ReelNo', $in->ReelNo)->update($update);
+            //     $reel->save();
+            //     foreach ($reel as $re) {
+            //         // $re->ReelNo =$re->ReelNo;
+            //         // $re->outwards_id =$re->outwards_id;
+            //         // $re->remaining_wt =$in->GrossWt + $g;
+            //         // $re->save();
+            //     }
+            // }
+            // else
+            // {
+            //     $reel = new reel;
+            //     $reel->ReelNo =$re->ReelNo;
+            //     $reel->outwards_id =$re->outwards_id;
+            //     $reel->remaining_wt =$in->GrossWt ;
+            //     $reel->save();
+            // }
+            // return redirect()->route('outwards.index')->with('success','outwards updated successfully');
+        }
+        else
+        {
+            $this->validate($request, [
+                'reelno' => 'unique:outwards'
+            ]);
+
+            $outwards->CustomerName =$request->input('cname');
+            $outwards->DateOfDispatch =$request->input('dod');
+            $outwards->TheirDesignNo =$request->input('tdn');
+            $outwards->OurDesignNo =$request->input('odn');
+            $outwards->Weight =$request->input('weight');
+            $outwards->Meter =$request->input('meter');
+            $outwards->ReelNo =$request->input('ReelNo');
+            $outwards->Remarks =$request->input('remarks');
+            $outwards->save();
+            return redirect()->route('outwards.index')->with('success','Outwards updated successfully');
+        }
     }
 
     /**

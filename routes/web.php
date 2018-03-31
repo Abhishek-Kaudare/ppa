@@ -11,21 +11,24 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::get('/c', function () {
     return view('layouts.create');
 });
 
 Auth::routes();
+Route::group(['middleware' => 'auth'], function () {
 
-Route::get('/home', 'InwardsController@index')->name('home');
+    Route::get('/', function () {
+        return view('layouts.master');
+    });
 
-Route::resource('inwards','InwardsController');
+    Route::resource('inwards','InwardsController');
 
-Route::resource('outwards','OutwardsController');
+    Route::resource('outwards','OutwardsController');
 
-Route::patch('/inwards/{inward}/reel', 'InwardsController@reels_update')->name('inwards.reel');
+    Route::patch('/inwards/{inward}/reel', 'InwardsController@reels_update')->name('inwards.reel');
+});
+
 

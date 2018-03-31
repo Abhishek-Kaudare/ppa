@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="box-body">
-            {!! Form::open(['action' => 'OutwardsController@store','method' => 'POST']) !!}
+             {!! Form::model($outwards, ['method' => 'PATCH','route' => ['outwards.update', $outwards->id]]) !!}
             <form>
                 {{csrf_field()}}
                 <div class="row">

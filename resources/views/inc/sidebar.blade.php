@@ -16,7 +16,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ URL::to('/outwards') }}">
                     <i class="fa fa-caret-square-o-up"></i>
                     <span>Outwards</span>
                 </a>
