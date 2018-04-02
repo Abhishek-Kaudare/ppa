@@ -11,6 +11,7 @@ use App\quality;
 use App\supplier;
 use View;
 use DB;
+use Yajra\Datatables\Datatables;
 
 class InwardsController extends Controller
 {
@@ -23,9 +24,30 @@ class InwardsController extends Controller
     {
         // return inwards::all();
         // $inwards = inwards::all();
-        $inwards= inwards::latest()->paginate(6);
+        $column = 'created_at';
+        $inwards= inwards::orderBy($column,'desc')->get();
         // return view('admin.index')->with('inwards',$inwards);
         return view('admin.inwards.index',compact('inwards'))->with('i',(request()->input('page',1)-1)*5);
+    }
+
+    /**
+     * Displays datatables front end view
+     *
+     * @return \Illuminate\View\View
+     */
+    public function getIndex()
+    {
+        return view('datatables.index');
+    }
+
+    /**
+     * Process datatables ajax request.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function anyData()
+    {
+        return Datatables::of(User::query())->make(true);
     }
 
     // public function inwards()
@@ -62,14 +84,7 @@ class InwardsController extends Controller
                 'grosswt' => 'required|numeric|min:0',
                 'netwt' => 'numeric|min:0'
             ]);
-            // inwards::create($request->all());
-            // reel::firstorCreate(array('ReelNo'=> $request->input('reelno'),'outwards_id'=> null,'remaining_wt'=> $request->input('grosswt')));
-            $reel = new reel;
-            $reel->ReelNo =$request->input('reelno');
-            $reel->outwards_id =null;
-            $reel->remaining_wt =$request->input('grosswt');
-            $reel->save();
-
+            
             $inwards = new inwards;
             $inwards->Date =$request->input('date');
             $inwards->RecievedFrom =$request->input('recievedfrom');
@@ -79,6 +94,7 @@ class InwardsController extends Controller
             $inwards->ReelNo =$request->input('reelno');
             $inwards->GrossWt =$request->input('grosswt');
             $inwards->NetWt =$request->input('netwt');
+            $inwards->outwards_id=null;
             $inwards->save();
         
         return redirect()->back()->with('success', 'Information has been added');
@@ -143,34 +159,44 @@ class InwardsController extends Controller
             $inwards->NetWt =$request->input('netwt');
             $inwards->save();
 
-
-            $in = inwards::find($id);
-            $reel= reel::where('ReelNo', $in->ReelNo )->get();
-            if(count($reel)>0)
+            if($inwards->outwards_id != null)
             {
-                $g = $in->GrossWt - $reel->remaining_wt ;
-                $reel->remaining_wt =$reel->remaining_wt + $g;
-                
-                // DB::table('reels')->whereIn('ReelNo', $in->ReelNo)->update($update);
-                $reel->save();
-                foreach ($reel as $re) {
-                    $reel->update(['remaining_wt'=>$reel->remaining_wt + $g]);
-                    // $re->ReelNo =$re->ReelNo;
-                    // $re->outwards_id =$re->outwards_id;
-                    // $re->remaining_wt =$in->GrossWt + $g;
-                    // $re->save();
+                global $id,$pass;
+                $find=$inwards->outwards_id;
+                $outwards= outwards::find($find);
+                $outwards->remaining_wt=$inwards->GrossWt- $outwards->Weight ;
+                $pass=$outwards->remaining_wt;
+                $outwards->save();
+                check:if($pass>0)
+                {   $id=$outwards->next_outwards_id;
+                    while ($id != null)
+                    {   
+                        $outwards= outwards::find($id);
+                        $outwards->remaining_wt=$pass- $outwards->GrossWt ;
+                        $pass=$outwards->remaining_wt;
+                        $outwards->save();
+                        $id=$outwards->next_outwards_id;
+                        if($pass>0)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            goto check;
+                        }
+                    }
+                }
+                else
+                {
+                    while ($id != null)
+                    {   
+                        $outwards= outwards::find($id);
+                        $id=$outwards->next_outwards_id;
+                        outwards::destroy($id);
+                    }
                 }
             }
-            else
-            {
-                $reel = new reel;
-                $reel->ReelNo =$re->ReelNo;
-                $reel->outwards_id =$re->outwards_id;
-                $reel->remaining_wt =$in->GrossWt ;
-                $reel->save();
-            }
-            return redirect()->route('inwards.reel',$in);
-            // return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
+            return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
         }
         else
         {
@@ -187,8 +213,18 @@ class InwardsController extends Controller
             $inwards->GrossWt =$request->input('grosswt');
             $inwards->NetWt =$request->input('netwt');
             $inwards->save();
-            $in = inwards::find($id);
-            return redirect()->route('inwards.reel',$in); 
+
+            if($inwards->outwards_id != null)
+            {
+                $id=$inwards->outwards_id;
+                while($id != null)
+                    {   
+                        $outwards= outwards::find($id);
+                        $id=$outwards->next_outwards_id;
+                        outwards::destroy($id);
+                    }
+            }
+            return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
         }
     }
 

@@ -1,23 +1,24 @@
 @extends('layouts.master') @section('content') @if(count($inwards)>0)
+<div class="container">
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Inwards</h3>
         <a class="btn btn-primary pull-right" href="{{ route('inwards.create') }}"> New Inwards</a>
     </div>
     <div class="box-body">
-        <table class="table table-bordered table-hover scrollbox dataTable">
+        <table class="table table-bordered table-hover scrollbox dataTable xxx" id="">
             <thead >
                 <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Recieved From</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Quality</th>
-                    <th scope="col">GSM</th>
-                    <th scope="col">Reel No.</th>
-                    <th scope="col">Gross Wt.</th>
-                    <th scope="col">Net Wt.</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Delete</th>
+                    <th >Date</th>
+                    <th >Recieved From</th>
+                    <th >Brand</th>
+                    <th >Quality</th>
+                    <th >GSM</th>
+                    <th >Reel No.</th>
+                    <th >Gross Wt.</th>
+                    <th >Net Wt.</th>
+                    <th >Edit</th>
+                    <th >Delete</th>
                 </tr>
             </thead>
             @foreach($inwards as $in)
@@ -52,7 +53,20 @@
         </table>
     </div>
 </div>
+</div>
 @else
 <p>No Post Found</p>
 @endif 
 @stop
+@section('javascripts')
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('.xxx').DataTable({
+                "select": true,
+                "paging": true,
+            });
+            
+        });
+    </script>
+@endsection

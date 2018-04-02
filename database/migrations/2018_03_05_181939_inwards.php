@@ -23,7 +23,9 @@ class Inwards extends Migration
             $table->string('ReelNo');
             $table->integer('GrossWt');
             $table->integer('NetWt');
+            $table->integer('outwards_id')->nullable();
             $table->timestamps();
+            
         });
     }
 
