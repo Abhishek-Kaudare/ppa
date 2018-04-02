@@ -23,6 +23,9 @@ class CreateOutwardsTable extends Migration
             $table->integer('Meter');
             $table->string('ReelNo');
             $table->string('Remarks')->nullable();
+            $table->integer('next_outwards_id')->nullable();
+            $table->integer('remaining_wt');
+            $table->integer('inwards_id');
             $table->timestamps();
         });
     }

@@ -61,12 +61,12 @@ class OutwardsController extends Controller
             
         ]);
        
-        $outwards=outwards::where('ReelNo',$request->input('ReelNo'))->get();
+        $inwards=inwards::where('ReelNo',$request->input('ReelNo'))->get();
         // return view('admin.eg',compact('outwards'));
         
-        if(count($outwards)==0)
+        if(count($inwards)==0)
         {
-            return redirect()->back()->with('warning', 'Reel No does not exist in outwards');
+            return redirect()->back()->with('warning', 'Reel No does not exist in inwards');
         }
         else 
         {
@@ -177,20 +177,25 @@ class OutwardsController extends Controller
         }
         else
         {
-            $this->validate($request, [
-                'reelno' => 'unique:outwards'
-            ]);
-
-            $outwards->CustomerName =$request->input('cname');
-            $outwards->DateOfDispatch =$request->input('dod');
-            $outwards->TheirDesignNo =$request->input('tdn');
-            $outwards->OurDesignNo =$request->input('odn');
-            $outwards->Weight =$request->input('weight');
-            $outwards->Meter =$request->input('meter');
-            $outwards->ReelNo =$request->input('ReelNo');
-            $outwards->Remarks =$request->input('remarks');
-            $outwards->save();
-            return redirect()->route('outwards.index')->with('success','Outwards updated successfully');
+            $inwards=inwards::where('ReelNo',$request->input('ReelNo'))->get();
+        
+            if(count($inwards)==0)
+            {
+                return redirect()->back()->with('warning', 'Reel No does not exist in inwards');
+            }
+            else 
+            {
+                $outwards->CustomerName =$request->input('cname');
+                $outwards->DateOfDispatch =$request->input('dod');
+                $outwards->TheirDesignNo =$request->input('tdn');
+                $outwards->OurDesignNo =$request->input('odn');
+                $outwards->Weight =$request->input('weight');
+                $outwards->Meter =$request->input('meter');
+                $outwards->ReelNo =$request->input('ReelNo');
+                $outwards->Remarks =$request->input('remarks');
+                $outwards->save();
+                return redirect()->route('outwards.index')->with('success','Outwards updated successfully');
+            }
         }
     }
 
