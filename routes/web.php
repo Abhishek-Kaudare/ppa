@@ -23,6 +23,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', function () {
         return view('layouts.master');
     });
+    
+    Route::get('/eg', function () { return view('admin.eg'); })->name('admin.eg');
 
     Route::resource('inwards','InwardsController');
 

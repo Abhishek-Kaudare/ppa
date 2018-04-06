@@ -247,31 +247,5 @@ class InwardsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function reels_update($in)
-    {
-        $reel= reel::where('ReelNo', $in->ReelNo)
-                    ->oldest()
-                    ->orderBy('created_at', 'desc')
-                    ->get();
-        $c=$reel->count();
-        if($c>0)
-        {
-            $g = $in->GrossWt - $reel->remaining_wt;
-            foreach ($reel as $re) {
-                $re->ReelNo =$in->ReelNo;
-                $re->outwards_id =$reel->outwards_id;
-                $re->remaining_wt =$in->GrossWt + $g;
-                $re->save();
-            }
-        }
-        else
-        {
-            $reel = new reel;
-            $re->ReelNo =$in->ReelNo;
-            $re->outwards_id =$reel->outwards_id;
-            $re->remaining_wt =$in->GrossWt + $g;
-            $re->save();
-        }
-        return redirect()->route('inwards.index')->with('success','Inwards updated successfully');
-    }
+    
 }

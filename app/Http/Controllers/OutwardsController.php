@@ -61,26 +61,73 @@ class OutwardsController extends Controller
             
         ]);
        
-        $inwards=inwards::where('ReelNo',$request->input('ReelNo'))->get();
+        $inwards=inwards::where('ReelNo',$request->input('ReelNo'))->first();
         // return view('admin.eg',compact('outwards'));
         
-        if(count($inwards)==0)
+        if(!$inwards)
         {
             return redirect()->back()->with('warning', 'Reel No does not exist in inwards');
         }
         else 
         {
-            $outwards = new outwards;
-            $outwards->CustomerName =$request->input('cname');
-            $outwards->DateOfDispatch =$request->input('dod');
-            $outwards->TheirDesignNo =$request->input('tdn');
-            $outwards->OurDesignNo =$request->input('odn');
-            $outwards->Weight =$request->input('weight');
-            $outwards->Meter =$request->input('meter');
-            $outwards->ReelNo =$request->input('ReelNo');
-            $outwards->Remarks =$request->input('remarks');
-            $outwards->save();
-            return redirect()->back()->with('success', 'Information has been added');
+            if($inwards->outwards_id==null)
+            {
+                $outwards = new outwards;
+                $outwards->CustomerName =$request->input('cname');
+                $outwards->DateOfDispatch =$request->input('dod');
+                $outwards->TheirDesignNo =$request->input('tdn');
+                $outwards->OurDesignNo =$request->input('odn');
+                $outwards->Weight =$request->input('weight');
+                $outwards->Meter =$request->input('meter');
+                $outwards->ReelNo =$request->input('ReelNo');
+                $outwards->Remarks =$request->input('remarks');
+                $outwards->inwards_id =$inwards->id;
+                $outwards->remaining_wt =$inwards->GrossWt-$request->input('weight');
+                $outwards->next_outwards_id=null;
+                $outwards->save();
+                $inwards->outwards_id =$outwards->id;
+                $inwards->save();
+                
+            }
+            else
+            {
+                // global $pass,$id;
+                $find =$inwards->outwards_id;
+                $outwards =outwards::find($find);
+                $pass =$outwards->remaining_wt;
+                $id=$outwards->next_outwards_id;
+                while ($id != null)
+                {   
+                    // return view('admin.eg');
+                    $outwards= outwards::find($id);
+                    $pass=$outwards->remaining_wt;
+                    $id=$outwards->next_outwards_id;
+                }
+                if($pass>0)
+                {
+                    $outwards1 = new outwards;
+                    $outwards1->CustomerName =$request->input('cname');
+                    $outwards1->DateOfDispatch =$request->input('dod');
+                    $outwards1->TheirDesignNo =$request->input('tdn');
+                    $outwards1->OurDesignNo =$request->input('odn');
+                    $outwards1->Weight =$request->input('weight');
+                    $outwards1->Meter =$request->input('meter');
+                    $outwards1->ReelNo =$request->input('ReelNo');
+                    $outwards1->Remarks =$request->input('remarks');
+                    $outwards1->inwards_id =$inwards->id;
+                    $outwards1->remaining_wt =$pass-$request->input('weight');
+                    $outwards1->next_outwards_id=null;
+                    $outwards1->save();
+                    $outwards->next_outwards_id =$outwards1->id;
+                    $outwards->save();
+                    return redirect()->back()->with('success', 'Information has been added');
+                }
+                else
+                {
+                    return redirect()->back()->with('error', 'Reel with Reel No. '.$inwards->ReelNo .' is already Empty.');
+                }
+            }
+            
         }
     }
 
@@ -141,39 +188,7 @@ class OutwardsController extends Controller
             $outwards->save();
             return redirect()->route('outwards.index')->with('success','Outwards updated successfully');
             
-            // $outwards=outwards::where('ReelNo',$request->input('ReelNo'))->get();
-            // return view('admin.eg',compact('outwards'));
-            // if(count($outwards)==0)
-            // {
-            //     return redirect()->back()->with('warning', 'Reel No does not exist in outwards');
-            // }
-            // $in = outwards::find($id);
-            // $reel= reel::where('ReelNo', $in->ReelNo )
-            //         ->oldest();
-            // $c=$reel->count();
-            // if($c>0)
-            // {
-            //     $g = $in->GrossWt - $reel->remaining_wt ;
-            //     // $reel->remaining_wt =$reel->remaining_wt + $g;
-            //     $reel->update(['remaining_wt'=>$reel->remaining_wt + $g]);
-            //     // DB::table('reels')->whereIn('ReelNo', $in->ReelNo)->update($update);
-            //     $reel->save();
-            //     foreach ($reel as $re) {
-            //         // $re->ReelNo =$re->ReelNo;
-            //         // $re->outwards_id =$re->outwards_id;
-            //         // $re->remaining_wt =$in->GrossWt + $g;
-            //         // $re->save();
-            //     }
-            // }
-            // else
-            // {
-            //     $reel = new reel;
-            //     $reel->ReelNo =$re->ReelNo;
-            //     $reel->outwards_id =$re->outwards_id;
-            //     $reel->remaining_wt =$in->GrossWt ;
-            //     $reel->save();
-            // }
-            // return redirect()->route('outwards.index')->with('success','outwards updated successfully');
+            
         }
         else
         {
