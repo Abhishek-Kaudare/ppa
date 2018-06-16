@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\inwards;
+use App\outwards;
 use App\reel;
 use App\brand;
 use App\quality;
